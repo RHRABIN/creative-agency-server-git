@@ -61,8 +61,8 @@ async function run() {
             const result = await reviewCollection.insertOne(review)
             res.send({ success: true, message: 'This review successfully added!' })
         })
-        // -------------------------------
-        // order collection 
+        // -----------------------------
+        // order collection here
 
         // get all order by email
         app.get('/orders/:email', async (req, res) => {
