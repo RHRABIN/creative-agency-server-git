@@ -18,7 +18,7 @@ async function run() {
         await client.connect();
         const serviceCollection = client.db("creative-agency").collection("services");
         const orderCollection = client.db("creative-agency").collection("orders");
-        const reviewCollection = client.db("creative-agency").collection("orders");
+        const reviewCollection = client.db("creative-agency").collection("review");
         const userCollection = client.db("creative-agency").collection("users");
 
         // -----------------------------
@@ -40,6 +40,21 @@ async function run() {
             res.send(result)
         })
 
+        // ============= review collection ============
+        // post client review
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            if (!(review.name || review.description || review.companyName)) {
+                return res.send({ success: false, message: 'Please fill up all input!' })
+            }
+            const result = await reviewCollection.insertOne(review)
+            res.send({ success: true, message: 'This review successfully added!' })
+        })
+
+        app.get('/reviewsall', async (req, res) => {
+            const result = await reviewCollection.find().toArray()
+            res.send(result)
+        })
 
         // ============= order collection =============
         // post client order info
@@ -51,17 +66,6 @@ async function run() {
             const result = await orderCollection.insertOne(order)
             res.send({ success: true, message: 'This order successfully added!' })
         })
-        // post client review
-        app.post('/review', async (req, res) => {
-            const review = req.body;
-            if (!(review.name || review.description || review.companyName)) {
-                return res.send({ success: false, message: 'Please fill up all input!' })
-            }
-            const result = await reviewCollection.insertOne(review)
-            res.send({ success: true, message: 'This review successfully added!' })
-        })
-        // -----------------------------
-        // order collection here
 
         // get all order by email
         app.get('/orders/:email', async (req, res) => {
